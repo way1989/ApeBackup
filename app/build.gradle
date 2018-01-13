@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.ape.backup"
+        minSdkVersion 23
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    def filePrivateProperties = file("../jks/jks.properties")
+    if (filePrivateProperties.exists()) {
+        signingConfigs {
+            debug {
+                Properties propsPrivate = new Properties()
+                propsPrivate.load(new FileInputStream(filePrivateProperties))
+
+                storeFile file(propsPrivate['key.store'])
+                keyAlias propsPrivate['key.alias']
+                storePassword propsPrivate['key.store.password']
+                keyPassword propsPrivate['key.alias.password']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+//    implementation files('libs/android-support-v4.jar')
+    implementation files('libs/commons-io.jar')
+//    implementation files('libs/ScreenshotHelper.jar')
+//    implementation files('libs/telephony-common.jar')
+//    implementation files('libs/vcalendar.jar')
+//    implementation files('libs/vcard.jar')
+}
